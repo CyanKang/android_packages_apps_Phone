@@ -631,7 +631,7 @@ public class CallFeaturesSetting extends PreferenceActivity
         } else if (preference == mButtonVoiceQuality) {
             updateVoiceQualitySummary((String) objValue);
         } else if (preference == mHomeDialSetting) {
-            updateHomeDialSettingSummary((String) objValue);
+            findHomeDialSettingSummary((String) objValue);
         }
         // always let the preference setting proceed.
         return true;
@@ -1930,7 +1930,7 @@ public class CallFeaturesSetting extends PreferenceActivity
         }
 
         if (mHomeDialSetting != null) {
-            updateHomeDialSettingSummary(mHomeDialSetting.getValue());
+            findHomeDialSettingSummary(mHomeDialSetting.getValue());
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
