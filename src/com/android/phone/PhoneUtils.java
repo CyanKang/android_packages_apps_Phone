@@ -36,6 +36,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.SystemProperties;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.PhoneNumberUtils;
@@ -422,6 +424,14 @@ public class PhoneUtils {
         static boolean markRejectedCallsAsMissed(Context context) {
             return PreferenceManager.getDefaultSharedPreferences(context)
                       .getBoolean("button_rejected_as_missed", false);
+        static  String homeDialSetting(Context context) {
+            String s = PreferenceManager.getDefaultSharedPreferences(context)
+                      .getString("home_dial_setting", "");
+            return s;
+        }
+        static boolean homeDial(Context context) {
+            return PreferenceManager.getDefaultSharedPreferences(context)
+                      .getBoolean("home_dial", false);
         }
     }
 
@@ -690,6 +700,16 @@ public class PhoneUtils {
         final boolean initiallyIdle = app.mCM.getState() == PhoneConstants.State.IDLE;
 
         try {
+            // All single 0's (not 00 nor +XX)on the beginning of the outgoing numbers
+            // will be replaced by the selected prefix
+            if ((numberToDial.startsWith("0")) && (!numberToDial.startsWith("00"))) {
+                if (PhoneSettings.homeDial(context)) {
+                    String myprefix = PhoneSettings.homeDialSetting(context);
+                    if (!myprefix.isEmpty()) {
+                        numberToDial = myprefix + numberToDial.substring(1, numberToDial.length());
+                    }
+                }
+            }
             connection = app.mCM.dial(phone, numberToDial);
         } catch (CallStateException ex) {
             // CallStateException means a new outgoing call is not currently
