@@ -419,6 +419,7 @@ public class PhoneUtils {
         static boolean markRejectedCallsAsMissed(Context context) {
             return PreferenceManager.getDefaultSharedPreferences(context)
                       .getBoolean("button_rejected_as_missed", false);
+        }
         static  String homeDialSetting(Context context) {
             String s = PreferenceManager.getDefaultSharedPreferences(context)
                       .getString("home_dial_setting", "");
@@ -427,6 +428,7 @@ public class PhoneUtils {
         static boolean homeDial(Context context) {
             return PreferenceManager.getDefaultSharedPreferences(context)
                       .getBoolean("home_dial", false);
+        }
         static boolean isBlacklistEnabled(Context context) {
             return getPrefs(context).getBoolean("button_enable_blacklist", false);
         }
