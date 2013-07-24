@@ -159,4 +159,7 @@
     <string name="home_dial_setting_summary">Will prefix your phone numbers with <xliff:g id="action">%s</xliff:g> when roaming</string>
     <string name="home_dial_setting_disabled">Disabled</string>
 
+    <string name="phone_number_label">My phone number</string>
+    <string name="phone_number_summary">Set the phone number for this device</string>
+    <string name="msisdn_alpha_tag" translatable="false">Voice Line 1</string>
 </resources>
