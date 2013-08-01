@@ -578,9 +578,13 @@ public class NotificationMgr implements CallerInfoAsyncQuery.OnQueryCompleteList
                 + ", date: " + date);
         }
 
+        // title resource id
+        int titleResId;
+        // the text in the notification's line 1 and 2.
+        String expandedText, callName;
+
         // get the name for the ticker text
         // i.e. "Missed call from <caller name or number>"
-        String callName;
         if (name != null && TextUtils.isGraphic(name)) {
             callName = name;
         } else if (!TextUtils.isEmpty(number)) {
@@ -593,13 +597,37 @@ public class NotificationMgr implements CallerInfoAsyncQuery.OnQueryCompleteList
         // keep track of the call, keeping list sorted from newest to oldest
         mMissedCalls.add(0, new MissedCallInfo(callName, number, date));
 
+        // display the first line of the notification:
+        // 1 missed call: call name
+        // more than 1 missed call: <number of calls> + "missed calls"
+        if (mMissedCalls.size() == 1) {
+            titleResId = R.string.notification_missedCallTitle;
+            expandedText = callName;
+        } else {
+            titleResId = R.string.notification_missedCallsTitle;
+            expandedText = mContext.getString(R.string.notification_missedCallsMsg,
+                    mMissedCalls.size());
+        }
+
         Notification.Builder builder = new Notification.Builder(mContext);
-        builder.setSmallIcon(android.R.drawable.stat_notify_missed_call)
+        if (Settings.System.getInt(mContext.getContentResolver(),
+               Settings.System.MISSED_CALL_BREATH, 0) == 1) {
+             builder.setSmallIcon(R.drawable.stat_notify_missed_call_breath)
                 .setTicker(mContext.getString(R.string.notification_missedCallTicker, callName))
                 .setWhen(date)
                 .setContentIntent(PendingIntent.getActivity(mContext, 0, callLogIntent, 0))
                 .setAutoCancel(true)
                 .setDeleteIntent(createClearMissedCallsIntent());
+           } else {
+             builder.setSmallIcon(android.R.drawable.stat_notify_missed_call)
+                .setTicker(mContext.getString(R.string.notification_missedCallTicker, callName))
+                .setWhen(date)
+                .setContentTitle(mContext.getText(titleResId))
+                .setContentText(expandedText)
+                .setContentIntent(PendingIntent.getActivity(mContext, 0, callLogIntent, 0))
+                .setAutoCancel(true)
+                .setDeleteIntent(createClearMissedCallsIntent());
+        }
 
         // display the first line of the notification:
         // 1 missed call: call name
